@@ -624,11 +624,13 @@ Frontend는 사용자의 기록 부담을 낮추고, 민감한 건강 맥락을 
 * Anonymous auth
 * Google Sign-In frontend request flow
 * Home dashboard
-* Stress log create/edit
+* Stress log create/edit/delete
 * Trigger/category management
 * Cycle current/history/create/update flow
 * My Cycle auto-save UX
+* Health Connect cycle import
 * Sleep log display states
+* Health Connect sleep import
 * Insight calendar / report UI
 * AI selected-period report card/detail UI
 * Profile / nickname editing
@@ -674,7 +676,7 @@ flowchart TD
     F --> F1["Stress score"]
     F --> F2["Trigger/category"]
     F --> F3["Memo"]
-    F --> F4["Create or edit event"]
+    F --> F4["Create, edit, or delete event"]
 
     G --> G1["Select period start/end"]
     G1 --> G2["Auto-save cycle"]
@@ -715,6 +717,10 @@ flowchart LR
     Source --> Synthetic["SyntheticSampleSource"]
     Wear --> Receiver["WatchSampleReceiver"]
     Receiver --> WatchBuffer["WatchSourceController"]
+    WatchBuffer --> Inference["Phone-side ONNX inference"]
+    Synthetic --> Inference
+    Inference --> EventsAPI["POST /api/v1/events"]
+    EventsAPI --> Backend
     Synthetic --> Uploader["WindowUploader"]
     WatchBuffer --> Uploader
     Uploader --> Batch["POST /api/v1/sync/biosignals/batch"]
